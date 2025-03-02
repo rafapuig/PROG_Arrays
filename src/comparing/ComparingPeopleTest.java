@@ -17,6 +17,13 @@ public class ComparingPeopleTest {
 
     public static void main(String[] args) {
         comparingPeopleArray();
+        comparingPeopleByNameAndLastName();
+    }
+
+    private static void comparingPeopleByNameAndLastName() {
+        Comparator<Person> byNameThenLastName = Person.byName.thenComparing(Person.byLastName);
+        Arrays.sort(people, byNameThenLastName);
+        System.out.println(Arrays.toString(people));
     }
 
     private static void comparingPeopleArray() {
@@ -41,6 +48,7 @@ public class ComparingPeopleTest {
         Arrays.sort(people, Comparator.comparing(person -> person.getLastName()));
 
     }
+
 
     static void anonymousTypeComparatorByName() {
 

@@ -46,7 +46,17 @@ public class Person implements Comparable<Person> {
     private static class ByNameComparator implements Comparator<Person> {
         @Override
         public int compare(Person o1, Person o2) {
-            return o1.name.compareTo(o2.name);
+            return o1.name.compareToIgnoreCase(o2.name);
+        }
+    }
+
+    /**
+     * Clase anidada para comparar objetos Person por apellidos
+     */
+    private static class ByLastNameComparator implements Comparator<Person> {
+        @Override
+        public int compare(Person o1, Person o2) {
+            return o1.lastName.compareToIgnoreCase(o2.name);
         }
     }
 
@@ -60,6 +70,8 @@ public class Person implements Comparable<Person> {
         }
     }
 
+
     public static final Comparator<Person> byAge = new ByAgeComparator();
     public static final Comparator<Person> byName = new ByNameComparator();
+    public static final Comparator<Person> byLastName = new ByLastNameComparator();
 }
