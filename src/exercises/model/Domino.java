@@ -106,7 +106,7 @@ class DominoesTest {
 
         StringJoiner sj = new StringJoiner("");
         for (Domino domino : dominoList) {
-            sj.add(domino.toChar(false));
+            sj.add(domino.toChar(true));
         }
         System.out.println(sj);
     }
