@@ -45,8 +45,6 @@ class PointTest {
         System.out.println(p3);
 
         areEquals = p1.equals(p3);
-
-
     }
 
 }
