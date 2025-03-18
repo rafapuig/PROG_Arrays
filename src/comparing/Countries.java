@@ -1,7 +1,7 @@
 package comparing;
 
 import formatting.ColumnInfo;
-import formatting.TablePrinter;
+import formatting.TableFormatter;
 
 import java.text.DecimalFormat;
 import java.util.StringJoiner;
@@ -59,7 +59,7 @@ public class Countries {
     private static final DecimalFormat gdpFormat = new DecimalFormat("#,### M$");
 
 
-
+/*
     private static String toCountryRow(Country country) {
         String nameColumn = String.format("%-" + nameLength + "s", country.getName());
         String populationColumn = String.format("%" + populationLength + "s", populationFormat.format(country.getPopulation()));
@@ -110,7 +110,9 @@ public class Countries {
                         text));
     }
 
-    public static String toCountriesTableString2(Country[] countries) {
+    */
+
+    public static String toCountriesTableString(Country[] countries) {
 
         ColumnInfo<Country> nameColumnInfo =
                 new ColumnInfo<>("nombre", nameLength, null, Country::getName);
@@ -124,8 +126,8 @@ public class Countries {
         ColumnInfo<Country> gdpColumnInfo =
                 new ColumnInfo<>("gdp", gdpLength, gdpFormat, Country::getGdp);
 
-        TablePrinter<Country> tablePrinter =
-                new TablePrinter<>(nameColumnInfo, populationColumnInfo, areaColumnInfo, gdpColumnInfo);
+        TableFormatter<Country> tablePrinter =
+                new TableFormatter<>(nameColumnInfo, populationColumnInfo, areaColumnInfo, gdpColumnInfo);
 
         return tablePrinter.getTable(countries);
     }

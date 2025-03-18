@@ -2,12 +2,18 @@ package comparing;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.StringJoiner;
 
 public class ComparingCountriesTest {
+
+    /**
+     * Metodo auxiliar para imprimir un listado en forma de tabla de los países por consola
+     */
+    void printCountries(Country[] countries) {
+        System.out.println(CountryTableFormatter.DEFAULT.getTable(countries));
+    }
 
     @Test
     public void testCompareNaturalOrder() {
@@ -57,15 +63,12 @@ public class ComparingCountriesTest {
 
         Arrays.sort(countries);
 
-        System.out.println(Countries.toCountriesTableString(countries));
+        printCountries(countries);
     }
-
-
 
 
     @Test
     void testCompareByPopulation() {
-
         Comparator<Country> comparator = new Country.ByPopulationComparator();
 
         int result = comparator.compare(Countries.USA, Countries.CHINA);
@@ -78,40 +81,24 @@ public class ComparingCountriesTest {
 
     @Test
     void testSortByPopulation() {
-
         Comparator<Country> comparator = new Country.ByPopulationComparator();
-
-        Country[] countries = new Country[Countries.COUNTRIES.length];
-
-        for (int i = 0; i < Countries.COUNTRIES.length; i++) {
-            countries[i] = Countries.COUNTRIES[i];
-        }
+        Country[] countries = Countries.provideCountries();
 
         Arrays.sort(countries, comparator);
 
-        StringJoiner joiner = new StringJoiner(", ", "[", "]");
-        for (int i = 0; i < countries.length; i++) {
-            joiner.add(countries[i].getName() + " (" + countries[i].getPopulation() + ")");
-        }
-        System.out.println(joiner);
-
+        printCountries(countries);
     }
 
 
     @Test
     void testSortByGDP() {
 
-        // Given
         Comparator<Country> comparator = new Country.ByGDPComparator();
-
         Country[] countries = Countries.provideCountries();
 
-        // When
         Arrays.sort(countries, comparator.reversed());
 
-        // Then
-        System.out.println(Countries.toCountriesTableString(countries));
-
+        printCountries(countries);
     }
 
     @Test
@@ -121,24 +108,13 @@ public class ComparingCountriesTest {
 
         Arrays.sort(countries, comparator);
 
-        String header = String.format("%-15s%-15s\n", "NOMBRE", "    AREA");
-        String line = "-".repeat(header.length()) + "\n";
-        String prefix = header + line;
-
-        DecimalFormat df = new DecimalFormat("#,### Km²");
-        System.out.println(
-                Countries.toCountriesString(countries, country ->
-                                String.format("%-15s", country.getName())
-                                        + String.format("%15s", df.format(country.getArea())),
-                        "\n", prefix, "\n" + line)
-        );
-
+        printCountries(countries);
     }
 
     @Test
     void testPrintCountries() {
         Country[] countries = Countries.provideCountries();
-        System.out.println(Countries.toCountriesTableString2(countries));
+        printCountries(countries);
     }
 
 

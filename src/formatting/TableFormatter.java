@@ -3,7 +3,7 @@ package formatting;
 import java.text.Format;
 import java.util.StringJoiner;
 
-public class TablePrinter<T> {
+public class TableFormatter<T> {
 
     ColumnInfo<T>[] columns;
 
@@ -13,7 +13,7 @@ public class TablePrinter<T> {
 
 
     @SafeVarargs
-    public TablePrinter(ColumnInfo<T>... columns) {
+    public TableFormatter(ColumnInfo<T>... columns) {
         this.columns = columns;
         this.header = generateHeader();
     }
@@ -63,10 +63,10 @@ public class TablePrinter<T> {
         for (int j = 0; j < columns.length; j++) {
 
             int cellLength = columns[j].getColumnLength();
-            Object fieldValue = columns[j].getKeyExtractor().apply(item);
+            Object fieldValue = columns[j].getKeyExtractor().extract(item);
             Format formatter = columns[j].getFormatter();
 
-            String cellContent = formatter != null ? formatter.format(fieldValue) : fieldValue.toString();
+            String cellContent = getCellFormattedContent(columns[j], item);
 
             boolean isNUmber = fieldValue instanceof Number;
             String format = "%" + (isNUmber ? "" : "-") + cellLength + "s";
@@ -79,12 +79,12 @@ public class TablePrinter<T> {
 
     private String getCellFormattedContent(ColumnInfo<T>  columnInfo, T item) {
         Format formatter = columnInfo.getFormatter();
-        Object fieldValue = columnInfo.getKeyExtractor().apply(item);
+        Object fieldValue = getCellValue(columnInfo, item);
         return formatter != null ? formatter.format(fieldValue) : fieldValue.toString();
     }
 
     private Object getCellValue(ColumnInfo<T> columnInfo, T item) {
-        return columnInfo.getKeyExtractor().apply(item);
+        return columnInfo.getKeyExtractor().extract(item);
     }
 
 }

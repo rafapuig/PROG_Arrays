@@ -7,9 +7,9 @@ public class ColumnInfo<T> {
     private final String columnName;
     private final int columnLength;
     private final Format formatter;
-    private final Function<T, Object> keyExtractor;
+    private final FieldValueExtractor<T, ?> keyExtractor;
 
-    public ColumnInfo(String columnName, int columnLength, Format formatter, Function<T, Object> keyExtractor) {
+    public ColumnInfo(String columnName, int columnLength, Format formatter, FieldValueExtractor<T, ?> keyExtractor) {
         this.columnName = columnName;
         this.columnLength = columnLength;
         this.formatter = formatter;
@@ -28,7 +28,7 @@ public class ColumnInfo<T> {
         return formatter;
     }
 
-    public Function<T, Object> getKeyExtractor() {
+    public FieldValueExtractor<T, ?> getKeyExtractor() {
         return keyExtractor;
     }
 }
