@@ -16,9 +16,38 @@ public class ComparingPeopleTest {
     static Person[] people = new Person[]{vanesa, marta, pedro, sandra, amador};
 
     public static void main(String[] args) {
-        comparingPeopleArray();
-        comparingPeopleByNameAndLastName();
+        comparingPeopleNaturalOrder();
+        //comparingPeopleNaturalOrder2();
+        //comparingPeopleArray();
+        //comparingPeopleByNameAndLastName();
     }
+
+    static void comparingPeopleNaturalOrder() {
+        // Comparar por el orden natural dos objetos se hace mediante la interface Comparable
+        // La clase Person debe haber implementado la interface Comparable<Person>
+
+        // Comparamos a Vanesa (18) con Amador (20)
+        int comparisonResult = vanesa.compareTo(amador); // Vanesa es menor que Amador --> resultado negativo
+
+        System.out.println(comparisonResult); // resultado negativo
+
+        // El metodo sign devuelve < si el argumento es negativo, = si es cero y > si es positivo
+        char sign = ComparisonUtils.sign(comparisonResult);
+
+        // Hacemos un "pretty print" del resultado
+        System.out.println(vanesa + " " + sign + " " + amador);
+    }
+
+
+    static void comparingPeopleNaturalOrder2() {
+        ComparisonUtils.printComparisonResults(vanesa, amador);
+        ComparisonUtils.printComparisonResults(amador, vanesa);
+    }
+
+
+
+
+
 
     private static void comparingPeopleByNameAndLastName() {
         Comparator<Person> byNameThenLastName = Person.byName.thenComparing(Person.byLastName);

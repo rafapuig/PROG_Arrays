@@ -1,7 +1,6 @@
 package comparing;
 
 import java.util.Comparator;
-import java.util.StringJoiner;
 
 public class Person implements Comparable<Person> {
 
@@ -29,15 +28,19 @@ public class Person implements Comparable<Person> {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "{", "}")
-                .add("name='" + name + "'")
-                .add("age=" + age)
-                .toString();
+        return "{" + name + " " + lastName + " (" +  age + ")}";
     }
 
+    /**
+     * El metodo compareTo implementa la interface Comparable
+     */
     @Override
     public int compareTo(Person other) {
+        //return byAge.compare(this, other);
         return Integer.compare(age, other.age);
+        /*if(this.age < other.age) return -1;
+        if(this.age > other.age) return +1;
+        return 0;*/
     }
 
     /**

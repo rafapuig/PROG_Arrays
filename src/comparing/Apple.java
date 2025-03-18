@@ -4,15 +4,8 @@ import java.util.StringJoiner;
 
 public class Apple implements Comparable<Apple>  {
 
-    @Override
-    public int compareTo(Apple other) {
-        if (this.weight > other.weight) return 1;
-        if (this.weight < other.weight) return -1;
-        return 0;
-    }
 
     public enum Color {GREEN, RED, YELLOW}
-
 
     private final Color color;
     private final float weight;
@@ -36,5 +29,12 @@ public class Apple implements Comparable<Apple>  {
                 .add("color=" + color)
                 .add("weight=" + weight)
                 .toString();
+    }
+
+    @Override
+    public int compareTo(Apple other) {
+        if (this.weight > other.weight) return 1;
+        if (this.weight < other.weight) return -1;
+        return 0;
     }
 }

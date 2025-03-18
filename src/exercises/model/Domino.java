@@ -88,19 +88,42 @@ public class Domino implements Comparable<Domino> {
     public final boolean equals(Object other) {
         if (!(other instanceof Domino domino)) return false;
         if (hashCode() != domino.hashCode()) return false;
-
         if (Arrays.equals(ends, domino.ends)) return true;
         return Arrays.equals(ends, domino.flip().ends);
     }
 
+    private Domino lowestDotsEndFirst() {
+        return ends[0] < ends[ends.length - 1] ? this : this.flip();
+    }
+
+    /**
+     * Ya que una ficha y su equivalente invertida se consideran iguales, deben devolver el mismo código hash
+     * Por lo tanto, no podemos calcular el código hash a partir de los valores del array, puesto que aunque
+     * tuvieran los mismos valores, si están en distinta posición el resultado del cálculo sería diferente
+     * Una solución consiste en crear una copia del array y ordenarlo, de forma que el los elementos del array copia
+     * estarán organizados de menor a mayor
+     * Es decir, si ordenamos la ficha [1:4] y la [4:1] ambas van a generar el mismo array copia ordenado
+     * copy[0] = 1
+     * copy[1] = 4
+     * Y por tanto, el mismo código hash
+     */
     @Override
     public int hashCode() {
-        //return Arrays.hashCode(endDots);
+        Domino domino = lowestDotsEndFirst();
         int result = 13;
-        for (int i = 0; i < ends.length; i++) {
-            result = 31 * result + ends[i];
+        for (int i = 0; i < domino.ends.length; i++) {
+            result = 31 * result + domino.ends[i];
         }
         return result;
+
+        /*int[] copy = Arrays.copyOf(ends, ends.length);
+        Arrays.sort(copy);
+        //return Arrays.hashCode(copy);
+        int result = 13;
+        for (int i = 0; i < copy.length; i++) {
+            result = 31 * result + copy[i];
+        }
+        return result;*/
     }
 
     private static final char SURROGATE_PAIR_HIGH = '\uD83C';
@@ -130,14 +153,27 @@ public class Domino implements Comparable<Domino> {
     public int compareTo(Domino other) {
         if (other == null) return 1;
         if (other == this) return 0;
-        for (int i = 0; i < ends.length; i++) {
-            int diff = Integer.compare(ends[i], other.ends[i]);
+
+        Domino domino1 = ends[0] < ends[ends.length - 1] ? this : this.flip();
+        Domino domino2 = other.ends[0] < other.ends[other.ends.length - 1] ? other : other.flip();
+
+        for (int i = 0; i < domino1.ends.length; i++) {
+            int diff = Integer.compare(domino1.ends[i], domino2.ends[i]);
             if (diff != 0) return diff;
         }
         return 0;
-        /*if(endDots[0] < other.endDots[0]) return -1;
-        if(endDots[0] > other.endDots[0]) return 1;
-        return Integer.compare(endDots[1], other.endDots[1]);*/
+
+        /*int[] copy = Arrays.copyOf(ends, ends.length);
+        Arrays.sort(copy);
+
+        int[] otherCopy = Arrays.copyOf(other.ends, other.ends.length);
+        Arrays.sort(otherCopy);
+
+        for (int i = 0; i < copy.length; i++) {
+            int diff = Integer.compare(copy[i], otherCopy[i]);
+            if (diff != 0) return diff;
+        }
+        return 0;*/
     }
 }
 
@@ -148,20 +184,16 @@ class DominoesTest {
         testWeight();
         testFlip();
         testEquals();
+        testHashCode();
 
         List<Domino> dominoList = new ArrayList<>();
         for (int i = 0; i <= 6; i++) {
-            for (int j = i; j <= 6; j++) {
+            for (int j = 0; j <= 6; j++) {
                 dominoList.add(new Domino(i, j));
             }
         }
 
-        /*for(Dominoes dominoe : dominoes) {
-            System.out.println(dominoe.toChar(true));
-        }*/
-
         printDominoTiles(dominoList);
-
         Collections.shuffle(dominoList);
         printDominoTiles(dominoList);
         Collections.sort(dominoList);
@@ -199,6 +231,16 @@ class DominoesTest {
         System.out.println(domino1 + " es igual a " + domino2 + "? " + areEquals);
         areEquals = domino1.equals(domino3);
         System.out.println(domino1 + " es igual a " + domino3 + "? " + areEquals);
+    }
+
+    static void testHashCode() {
+        Domino domino1 = new Domino(3, 5);
+        Domino domino2 = new Domino(5, 3);
+        Domino domino3 = new Domino(3, 4);
+
+        System.out.println(domino1.hashCode());
+        System.out.println(domino2.hashCode());
+        System.out.println(domino3.hashCode());
     }
 
     private static void testFlip() {
