@@ -8,6 +8,7 @@ public class TableFormatter<T> {
     ColumnInfo<T>[] columns;
 
     private final String header;
+    private final String lineSeparator;
 
     private static final String delimiter = " ";
 
@@ -16,76 +17,92 @@ public class TableFormatter<T> {
     public TableFormatter(ColumnInfo<T>... columns) {
         this.columns = columns;
         this.header = generateHeader();
+        this.lineSeparator = generateLineSeparator();
     }
 
-    public static String centerAligned(String text, int width) {
+    private static String centerAligned(String text, int width) {
         int printedLength = text.length();
         int padding = width - printedLength;
         int paddingLeft = padding / 2;
 
         return String.format("%-" + width + "s",
-                String.format("%" + (paddingLeft + text.length()) + "s",
+                String.format("%" + (paddingLeft + printedLength) + "s",
                         text));
     }
 
-    String generateHeader() {
+    private String generateHeader() {
 
-        StringJoiner cellJoiner = new StringJoiner(delimiter);
+        StringJoiner joiner = new StringJoiner(delimiter);
 
         for (ColumnInfo<T> column : columns) {
-            String columnName = column.getColumnName().toUpperCase();
-            int columnLength = column.getColumnLength();
-            String columnLabel = centerAligned(columnName, columnLength);
-            cellJoiner.add(columnLabel);
-        }
-
-        String header = cellJoiner.toString();
-        String lineSeparator = "-".repeat(header.length());
-        return header + "\n" + lineSeparator;
-    }
-
-    public String getTable(T[] items) {
-
-        StringJoiner joiner = new StringJoiner("\n");
-        joiner.add(header);
-
-        for (int i = 0; i < items.length; i++) {
-            joiner.add(generateRow(items[i]));
+            String columnLabel = generateColumnHeader(column);
+            joiner.add(columnLabel);
         }
 
         return joiner.toString();
     }
 
-    private String generateRow(T item) {
+    private String generateColumnHeader(ColumnInfo<T> column) {
+        String columnName = column.getColumnName().toUpperCase();
+        int columnLength = column.getColumnLength();
+        return centerAligned(columnName, columnLength);
+    }
+
+
+    private String generateLineSeparator() {
+        return  "-".repeat(header.length());
+    }
+
+
+    public String getTable(T[] items) {
+
+        StringJoiner joiner = new StringJoiner(System.lineSeparator());
+
+        joiner.add(header);
+        joiner.add(lineSeparator);
+        String tableRows = getRows(items);
+        joiner.add(tableRows);
+
+        return joiner.toString();
+    }
+
+
+    public String getRows(T[] items) {
+
+        StringJoiner joiner = new StringJoiner(System.lineSeparator());
+
+        for (int i = 0; i < items.length; i++) {
+            joiner.add(getRow(items[i]));
+        }
+
+        return joiner.toString();
+    }
+
+
+    public String getRow(T item) {
 
         StringJoiner joiner = new StringJoiner(delimiter);
 
         for (int j = 0; j < columns.length; j++) {
-
-            int cellLength = columns[j].getColumnLength();
-            Object fieldValue = columns[j].getKeyExtractor().extract(item);
-            Format formatter = columns[j].getFormatter();
-
-            String cellContent = getCellFormattedContent(columns[j], item);
-
-            boolean isNUmber = fieldValue instanceof Number;
-            String format = "%" + (isNUmber ? "" : "-") + cellLength + "s";
-            String cell = String.format(format, cellContent);
-
-            joiner.add(cell);
+            String cellContent = getCellContent(columns[j], item);
+            joiner.add(cellContent);
         }
         return joiner.toString();
     }
 
-    private String getCellFormattedContent(ColumnInfo<T>  columnInfo, T item) {
-        Format formatter = columnInfo.getFormatter();
-        Object fieldValue = getCellValue(columnInfo, item);
-        return formatter != null ? formatter.format(fieldValue) : fieldValue.toString();
+
+    public String getCellContent(ColumnInfo<T> column, T item) {
+        int cellLength = column.getColumnLength();
+        Object fieldValue = column.getKeyExtractor().extract(item);
+        Format formatter = column.getFormatter();
+
+        String formattedValue = formatter != null ? formatter.format(fieldValue) : fieldValue.toString();
+
+        boolean isNUmber = fieldValue instanceof Number;
+        String contentFormat = "%" + (isNUmber ? "" : "-") + cellLength + "s";
+        return String.format(contentFormat, formattedValue);
     }
 
-    private Object getCellValue(ColumnInfo<T> columnInfo, T item) {
-        return columnInfo.getKeyExtractor().extract(item);
-    }
 
 }
 
