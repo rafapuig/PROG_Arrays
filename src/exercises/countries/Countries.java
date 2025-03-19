@@ -1,4 +1,4 @@
-package comparing;
+package exercises.countries;
 
 import formatting.ColumnInfo;
 import formatting.TableFormatter;

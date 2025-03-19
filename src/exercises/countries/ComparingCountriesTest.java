@@ -1,5 +1,6 @@
-package comparing;
+package exercises.countries;
 
+import comparing.ComparisonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

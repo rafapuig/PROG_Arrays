@@ -1,6 +1,7 @@
-package comparing;
+package exercises.countries;
 
 import formatting.ColumnInfo;
+import formatting.FieldValueExtractor;
 import formatting.TableFormatter;
 
 import java.text.DecimalFormat;
@@ -17,16 +18,40 @@ public class CountryTableFormatter extends TableFormatter<Country> {
     private static final DecimalFormat gdpFormat = new DecimalFormat("#,### M$");
 
     public static final ColumnInfo<Country> nameColumnInfo =
-            new ColumnInfo<>("nombre", nameLength, null, Country::getName);
+            new ColumnInfo<>("nombre", nameLength, null,
+                    new FieldValueExtractor<Country, String>() {
+                        @Override
+                        public String extract(Country country) {
+                            return country.getName();
+                        }
+                    });
 
     public static final ColumnInfo<Country> populationColumnInfo =
-            new ColumnInfo<>("poblacion", populationLength, populationFormat, Country::getPopulation);
+            new ColumnInfo<>("poblacion", populationLength, populationFormat,
+                    new FieldValueExtractor<Country, Integer>() {
+                        @Override
+                        public Integer extract(Country country) {
+                            return country.getPopulation();
+                        }
+                    });
 
     public static final ColumnInfo<Country> areaColumnInfo =
-            new ColumnInfo<>("area", areaLength, areaFormat, Country::getArea);
+            new ColumnInfo<>("area", areaLength, areaFormat,
+                    new FieldValueExtractor<Country, Float>() {
+                        @Override
+                        public Float extract(Country country) {
+                            return country.getArea();
+                        }
+                    });
 
     public static final ColumnInfo<Country> gdpColumnInfo =
-            new ColumnInfo<>("gdp", gdpLength, gdpFormat, Country::getGdp);
+            new ColumnInfo<>("gdp", gdpLength, gdpFormat,
+                    new FieldValueExtractor<Country, Float>() {
+                        @Override
+                        public Float extract(Country country) {
+                            return country.getGdp();
+                        }
+                    });
 
 
     public static final CountryTableFormatter DEFAULT = new CountryTableFormatter();

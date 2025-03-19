@@ -1,4 +1,4 @@
-package comparing;
+package exercises.countries;
 
 import java.util.Comparator;
 import java.util.StringJoiner;
